@@ -1,0 +1,57 @@
+# STIX Entity Extraction Configuration
+
+# Model settings
+model:
+  model_id: "gemma3:27b"
+  model_url: "http://localhost:11434"
+  max_retries: 3
+  num_ctx: 4096  # Context window size in tokens (default: 2048)
+  max_char_buffer: 1000  # Max characters per chunk for long documents (default: 1000)
+
+# Dataset settings
+dataset:
+  dataset_dir: "datasets/dnrti"
+  splits: ["test"]  # Process only test split
+  train_file: null  # null = auto-detect from dataset_dir
+
+# Extraction settings
+extraction:
+  num_examples: 1  # Number of examples PER entity type (1=one example per type, 2=two examples per type, etc.)
+
+  # Custom extraction prompt (entity descriptions will be added automatically if present)
+  prompt: |
+    Extract cybersecurity threat intelligence entities from the text.
+
+  # Entity types with descriptions (will be added to prompt)
+  entity_types: #descriptions generated with ChatGPT
+    HackOrg:
+      description: "Named hacker or threat-actor groups/organizations (e.g. APT groups or cybercrime gangs) conducting the attacks."
+    OffAct:
+      description: "The concrete malicious activity or attack (e.g., a spear-phishing campaign or DDoS attack) carried out by the actor."
+    SamFile:
+      description: "Specific malicious samples, such as file names, malware binaries, and their associated hashes."
+    SecTeam:
+      description: "Security vendors, research teams, or government security units that analyze or respond to the threat."
+    Tool:
+      description: "Software, scripts, or malware families used as tools by the attacker during the operation."
+    Time:
+      description: "Dates or times when attacks, campaigns, or relevant events occur."
+    Purp:
+      description: "The attacker’s objective or purpose, such as espionage, data theft, or service disruption."
+    Area:
+      description: "Geographic locations related to the threat, such as countries, regions, or cities."
+    Idus:
+      description: "Industry sectors targeted or involved (e.g., finance, military, technology)."
+    Org:
+      description: "Legitimate organizations mentioned in the report, such as victim companies or service providers."
+    Way:
+      description: "The way or method the attack is executed, i.e., the attack vector or technique used to gain access."
+    Exp:
+      description: "Loopholes, vulnerabilities or exploits leveraged by the attacker, including both exploit names and identifiers (e.g., CVEs)."
+    Features:
+      description: "Distinctive behaviors of the attack."
+# Output settings
+output:
+  output_dir: null  # null = auto-generate based on dataset and model
+  save_jsonl: true  # Save LangExtract JSONL format
+  save_predictions: true  # Save BIO prediction format
